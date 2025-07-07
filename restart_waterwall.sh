@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #   Waterwall
-WATERWALL_PATH="/root/packettunnel/packettannel"
+WATERWALL_PATH="/root/packettunnel/Waterwall"
 
 #   dir scr
 SCRIPT_PATH="/root/restart_waterwall.sh"
