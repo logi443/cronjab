@@ -1,12 +1,26 @@
 #!/bin/bash
 
+# اجرای دستورات فقط برای بار اول
+FIRST_RUN_FLAG="/root/.packettunnel_setup_done"
+
+if [ ! -f "$FIRST_RUN_FLAG" ]; then
+    echo "🚨 Running first-time setup..."
+
+    systemctl stop packettunnel.service
+    systemctl disable packettunnel.service
+    timedatectl set-timezone Asia/Tehran
+
+    touch "$FIRST_RUN_FLAG"
+    echo "First-time setup complete. ✅"
+fi
+
 #   Waterwall
 WATERWALL_PATH="/root/packettunnel/Waterwall"
 
 #   dir scr
 SCRIPT_PATH="/root/restart_waterwall.sh"
 
-echo "🔧 creating    $SCRIPT_PATH..."
+echo "🔧 creating $SCRIPT_PATH..."
 
 # scr
 cat <<EOF > "$SCRIPT_PATH"
@@ -26,7 +40,7 @@ EOF
 # chmod
 chmod +x "$SCRIPT_PATH"
 
-echo "✅done"
+echo "done ✅"
 
 # اضافه کردن به cron root
 echo "⏱ adding "
@@ -42,10 +56,10 @@ echo "*/15 * * * * $SCRIPT_PATH" >> /tmp/current_cron
 crontab /tmp/current_cron
 rm /tmp/current_cron
 
-echo "✅  Waterwall cron created"
+echo "Waterwall cron created ✅"
 
 #  
-echo "🚀  frist run Waterwall..."
+echo "first run Waterwall... 🚀"
 bash "$SCRIPT_PATH"
 
-echo "🎉  done."
+echo "done.🎉"
