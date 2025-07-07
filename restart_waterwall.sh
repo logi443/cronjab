@@ -6,7 +6,7 @@ WATERWALL_PATH="/root/packettunnel/packettannel"
 #   dir scr
 SCRIPT_PATH="/root/restart_waterwall.sh"
 
-echo "🔧 ایجاد اسکریپت ریستارت در $SCRIPT_PATH..."
+echo "🔧 creating    $SCRIPT_PATH..."
 
 # scr
 cat <<EOF > "$SCRIPT_PATH"
@@ -29,7 +29,7 @@ chmod +x "$SCRIPT_PATH"
 echo "✅done"
 
 # اضافه کردن به cron root
-echo "⏱ اضافه کردن کران‌جاب برای اجرای هر ۱۵ دقیقه..."
+echo "⏱ adding "
 
 # delete cron
 crontab -l 2>/dev/null | grep -v "$SCRIPT_PATH" > /tmp/current_cron || true
@@ -42,10 +42,10 @@ echo "*/15 * * * * $SCRIPT_PATH" >> /tmp/current_cron
 crontab /tmp/current_cron
 rm /tmp/current_cron
 
-echo "✅ کران‌جاب ثبت شد. هر ۱۵ دقیقه Waterwall ریستارت میشه."
+echo "✅  Waterwall cron created"
 
 #  
-echo "🚀 اجرای اولیه Waterwall..."
+echo "🚀  frist run Waterwall..."
 bash "$SCRIPT_PATH"
 
-echo "🎉 نصب کامل شد."
+echo "🎉  done."
