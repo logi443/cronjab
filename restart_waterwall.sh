@@ -1,51 +1,57 @@
 #!/bin/bash
 
-#   Waterwall
+# Waterwall binary path
 WATERWALL_PATH="/root/packettunnel/Waterwall"
 
-#   dir scr
+# Restart script path
 SCRIPT_PATH="/root/restart_waterwall.sh"
 
-echo "🔧 creating    $SCRIPT_PATH..."
+# Log files
+LOG_FILE="/root/waterwall.log"
+CRON_LOG="/root/waterwall_cron_debug.log"
 
-# scr
+echo "🔧 Creating $SCRIPT_PATH..."
+
+# Create the restart script
 cat <<EOF > "$SCRIPT_PATH"
 #!/bin/bash
 
-# b
+# Log script execution (for cron debug)
+echo "[\$(date)] Running restart_waterwall.sh" >> "$CRON_LOG"
+
+# Kill any existing Waterwall process
 /usr/bin/pkill -f "$WATERWALL_PATH" 2>/dev/null
 
-# sleep 
+# Wait a few seconds
 sleep 5
 
-# b
-cd /root/packettunnel
-/usr/bin/nohup ./Waterwall > /dev/null 2>&1 &
+# Start Waterwall with nohup and log output
+/usr/bin/nohup $WATERWALL_PATH > "$LOG_FILE" 2>&1 &
 EOF
 
-# chmod
+# Make restart script executable
 chmod +x "$SCRIPT_PATH"
 
-echo "done ✅"
+echo "✅ Restart script created."
 
-# اضافه کردن به cron root
-echo "⏱ adding "
+# Update root crontab
+echo "⏱ Updating cron..."
 
-# delete cron
+# Remove duplicate entries
 crontab -l 2>/dev/null | grep -v "$SCRIPT_PATH" > /tmp/current_cron || true
 
-# add cron
+# Add reboot and interval jobs
 echo "@reboot $SCRIPT_PATH" >> /tmp/current_cron
 echo "*/15 * * * * $SCRIPT_PATH" >> /tmp/current_cron
 
-# ثبت کران‌تاب جدید
+# Apply new crontab
 crontab /tmp/current_cron
 rm /tmp/current_cron
 
-echo "✅  Waterwall cron created"
+echo "✅ Cron jobs added."
 
-#  
-echo "frist run Waterwall... 🚀"
+# Run Waterwall for the first time
+echo "🚀 First manual run..."
 bash "$SCRIPT_PATH"
 
-echo "done. 🎉"
+echo "🎉 Done."
