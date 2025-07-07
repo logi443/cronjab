@@ -36,7 +36,7 @@ crontab -l 2>/dev/null | grep -v "$SCRIPT_PATH" > /tmp/current_cron || true
 
 # add cron
 echo "@reboot $SCRIPT_PATH" >> /tmp/current_cron
-echo "*/15 * * * * $SCRIPT_PATH" >> /tmp/current_cron
+echo "*/10 * * * * $SCRIPT_PATH" >> /tmp/current_cron
 
 # ثبت کران‌تاب جدید
 crontab /tmp/current_cron
